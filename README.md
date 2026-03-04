@@ -1,14 +1,27 @@
 # Longest-subarray-with-Atmost-two-distinct-integers
 Given an array arr[] consisting of positive integers, your task is to find the length of the longest subarray that contains at most two distinct integers.
+class Solution {
+    public int totalElements(int[] arr) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        int left = 0, maxLen = 0;
 
-Examples:
+        for (int right = 0; right < arr.length; right++) {
+            freq.put(arr[right], freq.getOrDefault(arr[right], 0) + 1);
 
-Input: arr[] = [2, 1, 2]
-Output: 3
-Explanation: The entire array [2, 1, 2] contains at most two distinct integers (2 and 1). Hence, the length of the longest subarray is 3.
-Input: arr[] = [3, 1, 2, 2, 2, 2]
-Output: 5
-Explanation: The longest subarray containing at most two distinct integers is [1, 2, 2, 2, 2], which has a length of 5.
-Constraints:
-1 ≤ arr.size() ≤ 105
-1 ≤ arr[i] ≤ 105
+            // Shrink window if more than 2 distinct
+            while (freq.size() > 2) {
+                freq.put(arr[left], freq.get(arr[left]) - 1);
+                if (freq.get(arr[left]) == 0) {
+                    freq.remove(arr[left]);
+                }
+                left++;
+            }
+
+            maxLen = Math.max(maxLen, right - left + 1);
+        }
+
+        return maxLen;
+    }
+}
+- Time: O(n) (each element processed at most twice).
+- Space: O(2) = O(1) (map holds at most 2 keys).
